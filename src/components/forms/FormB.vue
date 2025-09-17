@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import InputField from '@/components/InputField.vue';
-import Button from '@/components/AppButton.vue';
+import AppButton from '@/components/AppButton.vue';
 import type { FormBData } from '@/types';
 
 const props = defineProps<{
@@ -60,25 +60,27 @@ const validatePatronymic = () => {
 
 const validateBirthDate = () => {
     const dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
-    if (!dateRegex.test(birthDate.value)) {
+    if (birthDate.value && !dateRegex.test(birthDate.value)) {
         errors.value.birthDate = 'Дата должна быть в формате ДД.ММ.ГГГГ';
         return false;
     }
 
     // Additional validation for real date
-    const parts = birthDate.value.split('.');
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
-    const year = parseInt(parts[2], 10);
+    if (birthDate.value) {
+        const parts = birthDate.value.split('.');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+        const year = parseInt(parts[2], 10);
 
-    const date = new Date(year, month, day);
-    if (
-        date.getFullYear() !== year ||
-        date.getMonth() !== month ||
-        date.getDate() !== day
-    ) {
-        errors.value.birthDate = 'Неверная дата';
-        return false;
+        const date = new Date(year, month, day);
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month ||
+            date.getDate() !== day
+        ) {
+            errors.value.birthDate = 'Неверная дата';
+            return false;
+        }
     }
 
     errors.value.birthDate = '';
@@ -86,13 +88,18 @@ const validateBirthDate = () => {
 };
 
 const validateLogin = () => {
-    if (login.value.length < 6) {
+    if (login.value && login.value.length < 6) {
         errors.value.login = 'Логин должен содержать минимум 6 символов';
         return false;
     }
 
-    if (!/^[a-zA-Z]+$/.test(login.value)) {
+    if (login.value && !/^[a-zA-Z]+$/.test(login.value)) {
         errors.value.login = 'Логин должен содержать только латинские символы';
+        return false;
+    }
+
+    if (login.value && login.value.length > 0 && login.value.length < 6) {
+        errors.value.login = 'Логин должен содержать минимум 6 символов';
         return false;
     }
 
@@ -101,7 +108,7 @@ const validateLogin = () => {
 };
 
 const validateEmail = () => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
         errors.value.email = 'Неверный формат электронной почты';
         return false;
     }
@@ -128,6 +135,31 @@ const formatDate = (value: string) => {
 
     return formatted;
 };
+
+// Real-time validation watchers
+watch(name, () => {
+    validateName();
+});
+
+watch(surname, () => {
+    validateSurname();
+});
+
+watch(patronymic, () => {
+    validatePatronymic();
+});
+
+watch(birthDate, () => {
+    validateBirthDate();
+});
+
+watch(login, () => {
+    validateLogin();
+});
+
+watch(email, () => {
+    validateEmail();
+});
 
 // Form validation
 const isFormValid = computed(() => {
@@ -203,7 +235,8 @@ const validateField = (field: keyof FormBData) => {
 
         <!-- Birth Date Field -->
         <InputField label="Дата рождения" id="birthDate" v-model="birthDate" :required="true" :error="errors.birthDate"
-            placeholder="ДД.ММ.ГГГГ" :format-function="formatDate" @blur="() => validateField('birthDate')" />
+            placeholder="ДД.ММ.ГГГГ" :format-function="formatDate" :digits-only="true"
+            @blur="() => validateField('birthDate')" />
 
         <!-- Login Field -->
         <InputField label="Логин" id="login" v-model="login" :required="true" :error="errors.login"
@@ -214,8 +247,8 @@ const validateField = (field: keyof FormBData) => {
             placeholder="Введите ваш email" @blur="() => validateField('email')" />
 
         <!-- Submit Button -->
-        <Button type="submit" :disabled="!isFormValid" :fullWidth="true" variant="success">
+        <AppButton type="submit" :disabled="!isFormValid" :fullWidth="true" variant="success">
             Отправить
-        </Button>
+        </AppButton>
     </form>
 </template>

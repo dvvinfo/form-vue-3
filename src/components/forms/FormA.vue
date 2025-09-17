@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import InputField from '@/components/InputField.vue';
-import Button from '@/components/AppButton.vue';
+import AppButton from '@/components/AppButton.vue';
 import type { FormAData } from '@/types';
 
 const props = defineProps<{
@@ -62,16 +62,32 @@ const validateInn = () => {
         return true;
     }
 
-    errors.value.inn = 'ИНН должен содержать 10 или 12 цифр';
-    return false;
+    if (innValue.length > 0) {
+        errors.value.inn = 'ИНН должен содержать 10 или 12 цифр';
+        return false;
+    }
+
+    errors.value.inn = '';
+    return true;
 };
 
 const validatePhone = () => {
+    // Extract only digits from the formatted phone number
+    const phoneDigits = phone.value.replace(/\D/g, '');
+
+    // Check if we have exactly 11 digits (7 XXX XXX XX XX)
+    if (phone.value && phoneDigits.length !== 11) {
+        errors.value.phone = 'Телефон должен содержать ровно 11 цифр';
+        return false;
+    }
+
+    // Check format pattern
     const phoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
-    if (!phoneRegex.test(phone.value)) {
+    if (phone.value && !phoneRegex.test(phone.value)) {
         errors.value.phone = 'Телефон должен быть в формате +7 (XXX) XXX-XX-XX';
         return false;
     }
+
     errors.value.phone = '';
     return true;
 };
@@ -102,15 +118,35 @@ const formatPhone = (value: string) => {
     return formatted;
 };
 
+// Real-time validation watchers
+watch(name, () => {
+    validateName();
+});
+
+watch(email, () => {
+    validateEmail();
+});
+
+watch(inn, () => {
+    validateInn();
+});
+
+watch(phone, () => {
+    validatePhone();
+});
+
 // Form validation
 const isFormValid = computed(() => {
+    // Extract only digits from the phone number
+    const phoneDigits = phone.value.replace(/\D/g, '');
+
     return (
         name.value.trim() !== '' &&
         errors.value.name === '' &&
         errors.value.email === '' &&
         inn.value.replace(/\s/g, '').length >= 10 &&
         errors.value.inn === '' &&
-        phone.value.length === 18 && // +7 (XXX) XXX-XX-XX = 18 characters
+        phoneDigits.length === 11 && // Exactly 11 digits for Russian phone numbers
         errors.value.phone === ''
     );
 });
@@ -164,11 +200,12 @@ const validateField = (field: keyof FormAData) => {
 
         <!-- Phone Field -->
         <InputField label="Телефон" id="phone" v-model="phone" :required="true" :error="errors.phone"
-            placeholder="+7 (XXX) XXX-XX-XX" :format-function="formatPhone" @blur="() => validateField('phone')" />
+            placeholder="+7 (XXX) XXX-XX-XX" :format-function="formatPhone" :digits-only="true"
+            @blur="() => validateField('phone')" />
 
         <!-- Submit Button -->
-        <Button type="submit" :disabled="!isFormValid" :fullWidth="true" variant="primary">
+        <AppButton type="submit" :disabled="!isFormValid" :fullWidth="true" variant="primary">
             Отправить
-        </Button>
+        </AppButton>
     </form>
 </template>

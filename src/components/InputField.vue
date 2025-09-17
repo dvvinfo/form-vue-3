@@ -3,11 +3,12 @@ interface Props {
     label: string;
     id: string;
     modelValue: string;
-    type?: 'text' | 'email' | 'password';
+    type?: 'text' | 'email' | 'password' | 'tel';
     placeholder?: string;
     required?: boolean;
     error?: string;
     formatFunction?: (value: string) => string;
+    digitsOnly?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,7 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
     placeholder: '',
     required: false,
     error: '',
-    formatFunction: undefined
+    formatFunction: undefined,
+    digitsOnly: false
 });
 
 const emit = defineEmits<{
@@ -27,6 +29,11 @@ const emit = defineEmits<{
 const handleInput = (e: Event) => {
     const input = e.target as HTMLInputElement;
     let value = input.value;
+
+    // If digitsOnly is true, remove all non-digit characters
+    if (props.digitsOnly) {
+        value = value.replace(/\D/g, '');
+    }
 
     // Apply formatting if provided
     if (props.formatFunction) {
