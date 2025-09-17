@@ -8,10 +8,10 @@ import { RouterLink } from 'vue-router';
             Формы
         </RouterLink>
         <div class="flex space-x-4">
-            <RouterLink to="/form-a" class="text-gray-700 hover:text-blue-600" active-class="text-blue-600 font-medium">
+            <RouterLink to="/taxpayer-form" class="text-gray-700 hover:text-blue-600" active-class="text-blue-600 font-medium">
                 Форма A
             </RouterLink>
-            <RouterLink to="/form-b" class="text-gray-700 hover:text-blue-600" active-class="text-blue-600 font-medium">
+            <RouterLink to="/user-profile-form" class="text-gray-700 hover:text-blue-600" active-class="text-blue-600 font-medium">
                 Форма B
             </RouterLink>
             <RouterLink to="/about" class="text-gray-700 hover:text-blue-600" active-class="text-blue-600 font-medium">

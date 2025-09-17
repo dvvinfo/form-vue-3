@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFormStore } from '@/stores/formStore';
-import FormA from '@/components/forms/FormA.vue';
+import FormA from '@/components/forms/TaxpayerForm.vue';
 import type { FormAData } from '@/types';
 import Button from '@/components/AppButton.vue';
 import { submitFormA } from '@/services/api';

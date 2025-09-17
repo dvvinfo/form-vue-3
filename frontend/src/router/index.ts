@@ -10,14 +10,14 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/form-a',
-      name: 'form-a',
-      component: () => import('../views/FormAView.vue'),
+      path: '/taxpayer-form',
+      name: 'taxpayer-form',
+      component: () => import('../views/TaxpayerView.vue'),
     },
     {
-      path: '/form-b',
-      name: 'form-b',
-      component: () => import('../views/FormBView.vue'),
+      path: '/user-profile-form',
+      name: 'user-profile-form',
+      component: () => import('../views/UserProfileView.vue'),
     },
     {
       path: '/results',
@@ -27,9 +27,6 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
   ],

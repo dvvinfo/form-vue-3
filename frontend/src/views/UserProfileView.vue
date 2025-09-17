@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFormStore } from '@/stores/formStore';
-import FormB from '@/components/forms/FormB.vue';
+import FormB from '@/components/forms/UserProfileForm.vue';
 import type { FormBData } from '@/types';
 import Button from '@/components/AppButton.vue';
 import { submitFormB } from '@/services/api';
