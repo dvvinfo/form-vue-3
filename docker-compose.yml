@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:13
+    container_name: forms-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-forms_db}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - forms-network
+
+  # Backend NestJS API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: forms-api
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-forms_db}
+      DB_SYNC: "false"
+      PORT: 3000
+    depends_on:
+      - db
+    networks:
+      - forms-network
+
+  # Frontend Vue.js Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: forms-frontend
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+      - VITE_DOCKER_ENV=true
+    depends_on:
+      - backend
+    networks:
+      - forms-network
+
+volumes:
+  postgres_data:
+
+networks:
+  forms-network:
+    driver: bridge

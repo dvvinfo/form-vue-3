@@ -25,7 +25,9 @@
     "migration:run": "npm run typeorm migration:run -- -d ormconfig.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ormconfig.ts",
     "migration:generate": "npm run typeorm migration:generate -- -d ormconfig.ts",
-    "db:init": "ts-node init-db.ts"
+    "db:init": "ts-node init-db.ts",
+    "docker:build": "docker build -t forms-api .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env forms-api"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

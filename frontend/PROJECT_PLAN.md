@@ -91,35 +91,16 @@ src/
 - [x] Verify responsive design with Tailwind
 
 ### 10. Backend Integration (Optional)
-- [ ] Create NestJS backend
-- [ ] Implement form endpoints
-- [ ] Connect frontend to backend
+- [x] Create NestJS backend
+- [x] Implement form endpoints
+- [x] Connect frontend to backend
 
-## Form Requirements
-
-### Form A Fields
-- Name (required)
-- Email (optional)
-- INN (required, validation for physical/legal entity)
-- Phone (required, format +7 (XXX) XXX-XX-XX)
-
-### Form B Fields
-- Name (required)
-- Surname (required)
-- Patronymic (required)
-- Date of Birth (required, format DD.MM.YYYY)
-- Login (required, min 6 characters, Latin only)
-- Email (required)
-
-## Validation Rules
-- Real-time validation
-- Submit button only active when form is valid
-- Server response simulation with fetch and setTimeout
-- Success response: { "requestId": "12345", "classifier": "some-string" }
-- Error response: { "error": "Error message" }
-
-## Component Approach
-- Reusable form components
-- Strict typing with TypeScript
-- Composition API usage
-- Tailwind CSS for styling
+### 11. Docker Packaging
+- [x] Create Dockerfile for backend
+- [x] Create Dockerfile for frontend
+- [x] Create docker-compose.yml for orchestration
+- [x] Create nginx configuration for frontend
+- [x] Add .dockerignore files
+- [x] Update package.json with Docker scripts
+- [x] Create README with Docker instructions
+- [x] Create test scripts for Docker setup
