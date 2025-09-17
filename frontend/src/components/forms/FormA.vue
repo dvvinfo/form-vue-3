@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import InputField from '@/components/InputField.vue';
+import PhoneInput from '@/components/PhoneInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import type { FormAData } from '@/types';
 
@@ -75,7 +76,7 @@ const validatePhone = () => {
     // Extract only digits from the formatted phone number
     const phoneDigits = phone.value.replace(/\D/g, '');
 
-    // Check if we have exactly 11 digits (7 XXX XXX XX XX)
+    // Check if we have exactly 11 digits
     if (phone.value && phoneDigits.length !== 11) {
         errors.value.phone = 'Телефон должен содержать ровно 11 цифр';
         return false;
@@ -94,7 +95,7 @@ const validatePhone = () => {
 
 // Format phone number as user types
 const formatPhone = (value: string) => {
-    // Remove all non-digit characters
+    // Remove all non-digit characters and limit to 11 digits
     const cleaned = value.replace(/\D/g, '').substring(0, 11);
 
     // Format as +7 (XXX) XXX-XX-XX
@@ -147,7 +148,8 @@ const isFormValid = computed(() => {
         inn.value.replace(/\s/g, '').length >= 10 &&
         errors.value.inn === '' &&
         phoneDigits.length === 11 && // Exactly 11 digits for Russian phone numbers
-        errors.value.phone === ''
+        errors.value.phone === '' &&
+        phone.value !== '' // Ensure phone is not empty
     );
 });
 
@@ -199,9 +201,8 @@ const validateField = (field: keyof FormAData) => {
             лица</p>
 
         <!-- Phone Field -->
-        <InputField label="Телефон" id="phone" v-model="phone" :required="true" :error="errors.phone"
-            placeholder="+7 (XXX) XXX-XX-XX" :format-function="formatPhone" :digits-only="true"
-            @blur="() => validateField('phone')" />
+        <PhoneInput label="Телефон" id="phone" v-model="phone" :required="true" :error="errors.phone"
+            placeholder="+7 (XXX) XXX-XX-XX" @blur="() => validateField('phone')" />
 
         <!-- Submit Button -->
         <AppButton type="submit" :disabled="!isFormValid" :fullWidth="true" variant="primary">

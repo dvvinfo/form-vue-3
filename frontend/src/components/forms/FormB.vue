@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import InputField from '@/components/InputField.vue';
+import PhoneInput from '@/components/PhoneInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import type { FormBData } from '@/types';
 

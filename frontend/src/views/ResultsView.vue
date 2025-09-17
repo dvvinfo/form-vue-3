@@ -66,25 +66,30 @@ onMounted(async () => {
 
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">История отправок</h2>
-            
+
             <div v-if="loading" class="text-center py-4">
                 Загрузка...
             </div>
-            
+
             <div v-else-if="submissions.length > 0">
                 <div v-for="submission in submissions" :key="submission.id" class="border-b border-gray-200 py-3">
                     <div class="flex justify-between items-center">
-                        <div>
+                        <div class="flex flex-col gap-1">
                             <span class="font-medium">Форма {{ submission.formType }}</span>
-                            <span class="text-gray-500 text-sm ml-2">ID: {{ submission.requestId }}</span>
+                            <span class=" text-sm"><span class="font-medium ">ID: </span><span class="text-gray-500">{{
+                                submission.requestId }}</span></span>
                         </div>
                         <div class="text-gray-500 text-sm">
                             {{ new Date(submission.submittedAt).toLocaleString() }}
                         </div>
                     </div>
+                    <div class="mt-1 text-sm">
+                        <span class="font-medium">Классификатор:</span> <span class="text-gray-500">{{
+                            submission.classifier }}</span>
+                    </div>
                 </div>
             </div>
-            
+
             <div v-else class="text-gray-600">
                 Нет отправленных форм.
             </div>
